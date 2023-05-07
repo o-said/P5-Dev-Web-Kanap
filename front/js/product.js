@@ -24,20 +24,15 @@ const execute = () =>{
         }
     })
     .then(data => {
-        console.log(data);
-        console.log(data.imageUrl);
-        let viewImg = `<img src="${data.imageUrl}"> `;
-        console.log(viewImg);
+        let viewImg = `<img src="${data.imageUrl}"> `;        
         document.querySelector('.item__img').innerHTML = viewImg;
         let viewTitle = `${data.name}`;
         document.querySelector('#title').innerHTML = viewTitle;
         let viewPrice = `${data.price}`;
         document.querySelector('#price').innerHTML = viewPrice;
         let viewDescription = `${data.altTxt}`;
-        document.querySelector('#description').innerHTML = viewDescription;
-    
-        let tabCol = data.colors;
-        console.log(tabCol);
+        document.querySelector('#description').innerHTML = viewDescription;    
+        let tabCol = data.colors;        
         let viewColor = '';
         for(let i of tabCol){
             viewColor += `<option value ="${i}">${i}</option>\n`;
@@ -48,19 +43,49 @@ const execute = () =>{
             event.preventDefault();
             let colorSelected = document.querySelector('#colors').value;
             const numberOfItem = document.querySelector('#quantity').value;
-
             let selectArticle = {
                 id : data._id,
-                img : data.imageUrl,
-                txtAlt: data.altTxt,
-                name : data.name,
-                qty :numberOfItem,
-                option : colorSelected,
-                price : viewPrice
-            }
-            console.log(selectArticle);
-        })
-    
+                quantity :numberOfItem,
+                option_product : colorSelected,
+                }        
+            const confirmWindow = () => {
+                if(window.confirm(`${numberOfItem} canapé `) ){
+                    basket.add(selectArticle);
+                    window.location.href = "cart.html"; 
+                } else {                        
+                    window.location.href = "index.html";                    
+                }    
+            }    
+        if (colorSelected != '' && numberOfItem != 0 && numberOfItem <= 100) {
+            confirmWindow();
+        }else if(numberOfItem > 100 && colorSelected != '') {
+            alert('Veuillez indiquer un nombre inférieur à 100');
+        }else {
+            alert('Veuillez choisir une couleur!');
         }
-)}
+    })
+})
+}
 execute();
+/*
+au click su ajouter au panier -> alert choix element ou quantité
+quantité min et max
+gérer création min et max
+condition pour min et max:
+        si depasse alert "quantité entre 1 et 100 pas 0"
+si couleur et quantité choisie -> message "article bien ajouté"
+utilser le localSrorage
+
+2- LOCALSTORAGE
+setItem , getItem pour sauvegarder ou obtenir les valeurs du panier
+    3 valeurs dans localStorage:
+        ID COULEUR QUANTITE
+*dans panier
+fetch-> avec id recuperer infos id+élément de référence
+        couleur dans storage
+*avant de sauvegarder le panier:
+        gérer les quantités 
+        verifier si produit de même quantité
+        si noyuv créer la valeur dans le panier
+        
+        */
