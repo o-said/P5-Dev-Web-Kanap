@@ -49,7 +49,7 @@ const execute = () =>{
                 option_product : colorSelected,
                 }        
             const confirmWindow = () => {
-                if(window.confirm(`${numberOfItem} canapé `) ){
+                if(window.confirm(`${numberOfItem} ${data.name} , couleur ${selectArticle.option_product} , ${(selectArticle.quantity <= 1) ? "a bien été ajouté " : "ont bien été ajoutés "} au panier \n Consulter le panier : OK ou revenir à l'acceuil : ANNULER `) ){
                     basket.add(selectArticle);
                     window.location.href = "cart.html"; 
                 } else {                        
