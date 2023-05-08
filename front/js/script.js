@@ -15,7 +15,6 @@ fetch('http://localhost:3000/api/products')
         }
         
 })
-
 .then(data => {
     for(let product of data){
         let linkA = document.createElement('a');

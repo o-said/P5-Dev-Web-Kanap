@@ -1,11 +1,6 @@
 const queryUrl = window.location.href;
-console.log(queryUrl);
 const url = new URL(queryUrl);
 const id = url.searchParams.get('id');
-console.log(queryUrl)
-console.log(url)
-console.log(id);
-
 const execute = () =>{
     fetch(`http://localhost:3000/api/products/${id}`)
     .then(response => {
