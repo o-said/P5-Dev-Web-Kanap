@@ -39,6 +39,12 @@ fetch('http://localhost:3000/api/products')
         h3.setAttributeNode(h3Class);
         article.appendChild(h3);
         h3.innerHTML = `"${product.name}"` ;
+        let p = document.createElement('p');
+        article.appendChild(p);
+        p.innerHTML = "`${product.description}`";
+        let classP = document.createAttribute('class');
+        classP.value ="productDescription";
+        p.setAttributeNode(classP);
         
 
 //h3.value = ;
