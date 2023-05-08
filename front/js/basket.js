@@ -13,7 +13,7 @@ class Basket {
     add(product) {
         let foundProduct = this.basket.find(p =>p.id == product.id && p.option_product == product.option_product);
         if(foundProduct != undefined) {
-            product.quantity = parseInt (product.quantity);
+            foundProduct.quantity = parseInt (product.quantity) + parseInt(foundProduct.quantity);
         }else {
             this.basket.push(product);
         }
