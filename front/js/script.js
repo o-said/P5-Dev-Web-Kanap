@@ -33,5 +33,14 @@ fetch('http://localhost:3000/api/products')
         let altTxt = document.createAttribute('alt');
         altTxt.value = `${product.altTxt}`;
         img.setAttributeNode(altTxt);
+        let h3 = document.createElement('h3');
+        let h3Class = document.createAttribute('class');
+        h3Class.value = "productName";
+        h3.setAttributeNode(h3Class);
+        article.appendChild(h3);
+        h3.innerHTML = `"${product.name}"` ;
+        
+
+//h3.value = ;
     }   
 })
