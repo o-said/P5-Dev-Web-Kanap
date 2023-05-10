@@ -38,11 +38,19 @@ const execute = () =>{
             event.preventDefault();
             let colorSelected = document.querySelector('#colors').value;
             const numberOfItem = document.querySelector('#quantity').value;
+            console.log(numberOfItem);
             let selectArticle = {
                 id : data._id,
                 quantity :numberOfItem,
                 option_product : colorSelected,
-                }        
+                }     
+            function fits(valueNumber){
+            if(Number.isInteger(valueNumber)){
+                return true;
+            }
+            return false;           
+        }
+        console.log(fits(numberOfItem));
             const confirmWindow = () => {
                 if(window.confirm(`${numberOfItem} ${data.name} , couleur ${selectArticle.option_product} , ${(selectArticle.quantity <= 1) ? "a bien été ajouté " : "ont bien été ajoutés "} au panier \n Consulter le panier : OK ou revenir à l'acceuil : ANNULER `) ){
                     basket.add(selectArticle);
@@ -50,8 +58,10 @@ const execute = () =>{
                 } else {                        
                     window.location.href = "index.html";                    
                 }    
-            }    
-        if (colorSelected != '' && numberOfItem != 0 && numberOfItem <= 100) {
+            }  
+        //let numberIsInteger = Number.isInteger(numberOfItem);
+        
+        if (colorSelected != '' && numberOfItem != 0 && numberOfItem <= 100 /* && fits(numberOfItem)*/ ) {
             confirmWindow();
         }else if(numberOfItem > 100 && colorSelected != '') {
             alert('Veuillez indiquer un nombre inférieur à 100');
