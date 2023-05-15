@@ -1,6 +1,8 @@
+//On récupère l'url , on le décompose en un objet pour pouvoir récupérer l'id 
 const queryUrl = window.location.href;
 const url = new URL(queryUrl);
 const id = url.searchParams.get('id');
+//On récupère les données spécifique à l'id avec un fetch
 const execute = () =>{
     fetch(`http://localhost:3000/api/products/${id}`)
     .then(response => {
@@ -18,6 +20,7 @@ const execute = () =>{
                 break;
         }
     })
+    //On crée les éléments et on leur affecte leur propriétés 
     .then(data => {
         let viewImg = `<img src="${data.imageUrl}"> `;        
         document.querySelector('.item__img').innerHTML = viewImg;
@@ -28,73 +31,60 @@ const execute = () =>{
         let viewDescription = `${data.altTxt}`;
         document.querySelector('#description').innerHTML = viewDescription;    
         let tabCol = data.colors;        
-        let viewColor = '';
-        for(let i of tabCol){
+        let viewColor = "";
+        viewColor = `<option value ="">--SVP, choisissez une couleur</option>\n`
+        for(let i of tabCol){            
             viewColor += `<option value ="${i}">${i}</option>\n`;
-            }
+            }        
         document.querySelector('#colors').innerHTML = viewColor;
         const btn_addBasket = document.querySelector('#addToCart');
+        //au click sur le boutton , on récupère les données correspondantes à l'id, la quantité, et la couleur
         btn_addBasket.addEventListener('click',(event)=> {
             event.preventDefault();
             let colorSelected = document.querySelector('#colors').value;
             const numberOfItem = document.querySelector('#quantity').value;
-            console.log(numberOfItem);
             let selectArticle = {
                 id : data._id,
                 quantity :numberOfItem,
                 option_product : colorSelected,
-                }     
+                }   
+            //on crée une fonction qui vérifie que la valeur de la quantité désirée soit bien un entier
             function fits(valueNumber){
             if(Number.isInteger(valueNumber)){
                 return true;
             }
             return false;           
-        }
-        let num = Number(numberOfItem)
-        console.log(num);
-        console.log(fits(num));
+            }
+            let num = Number(numberOfItem)
             const confirmWindow = () => {
-                if(window.confirm(`${numberOfItem} ${data.name} , couleur ${selectArticle.option_product} , ${(selectArticle.quantity <= 1) ? "a bien été ajouté " : "ont bien été ajoutés "} au panier \n Consulter le panier : OK ou revenir à l'acceuil : ANNULER `) ){
+                //window.confirm 'Voulez vous continuer vos achats?
+                //si oui on ajoute les données au localStorage et on retourne sur la page d'accueil
+                if(window.confirm('Voulez-vous continuer vos achats ?')){
                     basket.add(selectArticle);
-                    window.location.href = "cart.html"; 
+                    window.location.href = "index.html";   
+                //si  non on ajoute les données au localeStorage et on passe a la page panier(cart.js)
                 } else {                        
-                    window.location.href = "index.html";                    
+                    basket.add(selectArticle);
+                    window.location.assign("cart.html") ;                     
                 }    
+            }
+            //selon les vvaleurs des données on valide le chois d'article ou on émet des alertes contenants un descriptif
+            if (colorSelected != "" && numberOfItem != 0 && numberOfItem <= 100  && fits(num) ) {            
+                confirmWindow();
+            }else if(colorSelected != "" && numberOfItem != 0   && !fits(num) ){
+                alert('Veuillez entrer un nombre entier inférieur à 100');
+            }else if( colorSelected != "" && numberOfItem != 0 && numberOfItem > 100 && fits(num)) {
+                alert('Veuillez indiquer une quantité inférieur à 100');
+            }else if (colorSelected == "" && numberOfItem != 0 ){
+                alert ('Veuillez indiquer une couleur !');
             }  
-        //let numberIsInteger = Number.isInteger(numberOfItem);
-        
-        if (colorSelected != '' && numberOfItem != 0 && numberOfItem <= 100  && fits(num) ) {
-            confirmWindow();
-        }else if(colorSelected != '' && numberOfItem != 0 && numberOfItem <= 100  && !fits(num) ){
-            alert('Veuillez entrer un nombre entier inférieur à 100')
-        }else if(numberOfItem > 100 && colorSelected != '') {
-            alert('Veuillez indiquer un nombre inférieur à 100');
-        }else if (colorSelected = '') {
-            alert('Veuillez choisir une couleur!');
-        }
+            else if (colorSelected != "" && numberOfItem == 0 ){
+                alert ('Veuillez indiquer une quantité !');
+            }
+            else if (colorSelected == "" && numberOfItem == 0 ){
+                alert('Veuillez indiquer une quantité et une couleur !')
+            }  
+        })
     })
-})
 }
 execute();
-/*
-au click su ajouter au panier -> alert choix element ou quantité
-quantité min et max
-gérer création min et max
-condition pour min et max:
-        si depasse alert "quantité entre 1 et 100 pas 0"
-si couleur et quantité choisie -> message "article bien ajouté"
-utilser le localSrorage
-
-2- LOCALSTORAGE
-setItem , getItem pour sauvegarder ou obtenir les valeurs du panier
-    3 valeurs dans localStorage:
-        ID COULEUR QUANTITE
-*dans panier
-fetch-> avec id recuperer infos id+élément de référence
-        couleur dans storage
-*avant de sauvegarder le panier:
-        gérer les quantités 
-        verifier si produit de même quantité
-        si noyuv créer la valeur dans le panier
-        
-        */
