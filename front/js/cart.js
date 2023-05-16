@@ -7,7 +7,6 @@ function getBasket(){
     }    
 }
 let cart = getBasket();
-console.log(cart);
 let allProduct = [];
 let products = [];
 let imageUrl = [];
@@ -17,20 +16,14 @@ const run =()=> {
     .then (data => {
         //boucle pour récupérer les données de l'api
         for(let product of data){
-            allProduct.push(product);
-            console.log(allProduct);
+            allProduct.push(product);           
         };
         for(let p of cart){
             //récupérer les id du post 
-            products.push(p.id);
-            console.log(products)
-            console.log(p.id)
-            console.log(p.option_product)
+            products.push(p.id);            
             //retrouver les produits de l'api et du panier
-            const find = allProduct.find(product => product._id == p.id);
-            console.log(find);
-            p.imageUrl = find.imageUrl;
-            console.log(p.imageUrl);
+            const find = allProduct.find(product => product._id == p.id);            
+            p.imageUrl = find.imageUrl;            
             p.altTxt = find.altTxt;
             console.log(p.altTxt);
             p.description = find.description;
@@ -38,7 +31,7 @@ const run =()=> {
             p.price = find.price;
             console.log(p.price);
             p.option_color = p.option_product;
-            console.log(p.option_color);
+            
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
             let items = document.getElementById('cart__items');
