@@ -45,9 +45,10 @@ const execute = () =>{
             const numberOfItem = document.querySelector('#quantity').value;
             let selectArticle = {
                 id : data._id,
-                quantity :numberOfItem,
+                quantity :parseInt(numberOfItem),
                 option_product : colorSelected,
                 }   
+            console.log(selectArticle);
             //on crée une fonction qui vérifie que la valeur de la quantité désirée soit bien un entier
             function fits(valueNumber){
             if(Number.isInteger(valueNumber)){
@@ -55,22 +56,11 @@ const execute = () =>{
             }
             return false;           
             }
-            let num = Number(numberOfItem)
-            const confirmWindow = () => {
-                //window.confirm 'Voulez vous continuer vos achats?
-                //si oui on ajoute les données au localStorage et on retourne sur la page d'accueil
-                if(window.confirm('Voulez-vous continuer vos achats ?')){
-                    basket.add(selectArticle);
-                    window.location.href = "index.html";   
-                //si  non on ajoute les données au localeStorage et on passe a la page panier(cart.js)
-                } else {                        
-                    basket.add(selectArticle);
-                    //window.location.assign("cart.html") ;                     
-                }    
-            }
-            //selon les vvaleurs des données on valide le chois d'article ou on émet des alertes contenants un descriptif
+            let num = Number(numberOfItem);
+            //selon les valeurs des données on valide le chois d'article où on émet des alertes contenants un descriptif de l'erreur;
             if (colorSelected != "" && numberOfItem != 0 && numberOfItem <= 100  && fits(num) ) {            
-                confirmWindow();
+                alert(`${numberOfItem} ${data.name}, couleur ${colorSelected}, ${(numberOfItem <= 1) ? "a bien été ajouté " : "ont bien été ajoutés"} au panier. `);
+                basket.add(selectArticle);
             }else if(colorSelected != "" && numberOfItem != 0   && !fits(num) ){
                 alert('Veuillez entrer un nombre entier inférieur à 100');
             }else if( colorSelected != "" && numberOfItem != 0 && numberOfItem > 100 && fits(num)) {

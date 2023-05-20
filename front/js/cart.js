@@ -1,15 +1,17 @@
+
 function getBasket(){
     let basket = localStorage.getItem("basket");
     if(basket == null){//dans le cas  d'un panier vide -> basket n'est pas déclaré
         return [];
     }else{//le panier existe
         return JSON.parse(basket)
-    }    
+    }        
 }
 let cart = getBasket();
 let allProduct = [];
 let products = [];
 let imageUrl = [];
+let totalProduct = [];
 const run =()=> {
     fetch(`http://localhost:3000/api/products/`)
     .then (response => response.json())
@@ -24,12 +26,9 @@ const run =()=> {
             //retrouver les produits de l'api et du panier
             const find = allProduct.find(product => product._id == p.id);            
             p.imageUrl = find.imageUrl;            
-            p.altTxt = find.altTxt;
-            console.log(p.altTxt);
-            p.description = find.description;
-            console.log(p.description);
-            p.price = find.price;
-            console.log(p.price);
+            p.altTxt = find.altTxt;            
+            p.description = find.description;            
+            p.price = find.price;            
             p.option_color = p.option_product;            
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
@@ -125,10 +124,12 @@ const run =()=> {
             classPDelelete.value = "deleteItem";
             pDelete.setAttributeNode(classPDelelete);
             pDelete.textContent = "Supprimer";
-            
-
         }
-        
+        function totalNumberOfProduct(){    
+            totalProduct = basket.getNumberProduct();
+            document.getElementById('totalQuantity').innerHTML = totalProduct;
+        }
+        totalNumberOfProduct();
     })
 }
 run();
