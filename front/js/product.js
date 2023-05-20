@@ -65,7 +65,7 @@ const execute = () =>{
                 //si  non on ajoute les données au localeStorage et on passe a la page panier(cart.js)
                 } else {                        
                     basket.add(selectArticle);
-                    window.location.assign("cart.html") ;                     
+                    //window.location.assign("cart.html") ;                     
                 }    
             }
             //selon les vvaleurs des données on valide le chois d'article ou on émet des alertes contenants un descriptif

@@ -30,8 +30,7 @@ const run =()=> {
             console.log(p.description);
             p.price = find.price;
             console.log(p.price);
-            p.option_color = p.option_product;
-            
+            p.option_color = p.option_product;            
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
             let items = document.getElementById('cart__items');
@@ -71,6 +70,7 @@ const run =()=> {
             //cart__item__content__description > h2
             let h2Description = document.createElement('h2');
             divDescription.appendChild(h2Description);
+            h2Description.innerHTML = find.name;
             //cart__item__content__description > p
             let pDescriptionColor = document.createElement('p')
             divDescription.appendChild(pDescriptionColor);
@@ -91,6 +91,7 @@ const run =()=> {
             //div "cart__item__content__settings__quantity" > p
             let pQuantity = document.createElement('p');
             divQuantity.appendChild(pQuantity);
+            pQuantity.innerText = "Qté : "
             //div "cart__item__content__settings__quantity" > input
             let inputQuantity = document.createElement('input');
             divQuantity.appendChild(inputQuantity);
@@ -110,7 +111,7 @@ const run =()=> {
             maxItemQuantity.value = "100";
             inputQuantity.setAttributeNode(maxItemQuantity);
             let valueItemQuantity = document.createAttribute('value');
-            valueItemQuantity.value = "0";
+            valueItemQuantity.value = p.quantity;
             inputQuantity.setAttributeNode(valueItemQuantity);
             //div "cart__item__content__settings__delete";
             let divDelete = document.createElement('div');
@@ -124,6 +125,8 @@ const run =()=> {
             classPDelelete.value = "deleteItem";
             pDelete.setAttributeNode(classPDelelete);
             pDelete.textContent = "Supprimer";
+            
+
         }
         
     })
