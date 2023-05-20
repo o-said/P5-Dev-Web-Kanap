@@ -12,6 +12,7 @@ let allProduct = [];
 let products = [];
 let imageUrl = [];
 let totalProduct = [];
+let totalPrice = 0;
 const run =()=> {
     fetch(`http://localhost:3000/api/products/`)
     .then (response => response.json())
@@ -130,6 +131,18 @@ const run =()=> {
             document.getElementById('totalQuantity').innerHTML = totalProduct;
         }
         totalNumberOfProduct();
+        function setTotalPrice(){
+            let totalPrice = basket.getTotalPrice();
+            console.log(totalPrice);
+            document.getElementById("totalPrice").innerHTML = totalPrice;            
+        }
+        setTotalPrice();
+       /* const input = document.getElementsByName('itemQuantity');
+        console.log(input);
+        input.addEventListener('change', updateValue);
+        function updateValue(e){
+            input.
+        }*/
     })
 }
 run();

@@ -48,10 +48,14 @@ class Basket{
 
     getTotalPrice(){
         let total = 0;
-        for (let product of this.basket){
-            total += product.quantity * product.price;
-        }
-        return number;
+        products == [];
+        for (let p of cart){
+            const find = allProduct.find(product => product._id == p.id);
+            products.push(find);
+            console.log(find);
+            total += p.quantity * find.price;    
+        console.log(total)    }
+        return total; 
     }
 }
 let basket = new Basket();
