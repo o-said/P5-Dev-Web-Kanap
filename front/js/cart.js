@@ -1,4 +1,3 @@
-
 function getBasket(){
     let basket = localStorage.getItem("basket");
     if(basket == null){//dans le cas  d'un panier vide -> basket n'est pas déclaré
@@ -8,6 +7,8 @@ function getBasket(){
     }        
 }
 let cart = getBasket();
+cart = Array.isArray(cart) ? cart : [];
+console.log(cart);
 let allProduct = [];
 let products = [];
 let imageUrl = [];
@@ -16,21 +17,26 @@ let totalPrice = 0;
 const run =()=> {
     fetch(`http://localhost:3000/api/products/`)
     .then (response => response.json())
-    .then (data => {
+    .then (data => {         
         //boucle pour récupérer les données de l'api
         for(let product of data){
             allProduct.push(product);           
         };
-        for(let p of cart){
+        for(p of cart){            
             //récupérer les id du post 
-            products.push(p.id);            
+                let article = {
+                    id : p.id,
+                    color: p.option_product,
+                    quantity: p.quantity
+                };                  
             //retrouver les produits de l'api et du panier
-            const find = allProduct.find(product => product._id == p.id);            
+            const find = allProduct.find(product => product._id == p.id);                   
             p.imageUrl = find.imageUrl;            
             p.altTxt = find.altTxt;            
             p.description = find.description;            
             p.price = find.price;            
-            p.option_color = p.option_product;            
+            p.option_color = p.option_product;                 
+            products.push(p.id,p.quantity,p.option_color);             
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
             let items = document.getElementById('cart__items');
@@ -74,8 +80,10 @@ const run =()=> {
             //cart__item__content__description > p
             let pDescriptionColor = document.createElement('p')
             divDescription.appendChild(pDescriptionColor);
+            pDescriptionColor.innerText = p.option_color;
             let pDescriptionPrice = document.createElement('p')
             divDescription.appendChild(pDescriptionPrice);
+            pDescriptionPrice.innerText = p.price + ' ' +'€';
             //div "cart__item__content__settings"
             let divContentSetting = document.createElement('div');
             divContent.appendChild(divContentSetting);
@@ -91,7 +99,7 @@ const run =()=> {
             //div "cart__item__content__settings__quantity" > p
             let pQuantity = document.createElement('p');
             divQuantity.appendChild(pQuantity);
-            pQuantity.innerText = "Qté : "
+            pQuantity.innerText = 'Qté' + ' ' + ' : ';
             //div "cart__item__content__settings__quantity" > input
             let inputQuantity = document.createElement('input');
             divQuantity.appendChild(inputQuantity);
@@ -125,24 +133,44 @@ const run =()=> {
             classPDelelete.value = "deleteItem";
             pDelete.setAttributeNode(classPDelelete);
             pDelete.textContent = "Supprimer";
-        }
-        function totalNumberOfProduct(){    
-            totalProduct = basket.getNumberProduct();
-            document.getElementById('totalQuantity').innerHTML = totalProduct;
-        }
-        totalNumberOfProduct();
-        function setTotalPrice(){
-            let totalPrice = basket.getTotalPrice();
-            console.log(totalPrice);
-            document.getElementById("totalPrice").innerHTML = totalPrice;            
-        }
-        setTotalPrice();
-       /* const input = document.getElementsByName('itemQuantity');
-        console.log(input);
-        input.addEventListener('change', updateValue);
-        function updateValue(e){
-            input.
-        }*/
-    })
-}
+            function totalNumberOfProduct(){    
+                totalProduct = basket.getNumberProduct();
+                document.getElementById('totalQuantity').innerHTML = totalProduct;
+            }
+            totalNumberOfProduct();
+            function setTotalPrice(){
+                let totalPrice = basket.getTotalPrice();                          
+                document.getElementById("totalPrice").innerHTML = totalPrice;            
+            }
+            setTotalPrice(); 
+            function changeNumberOfProducts() {
+                inputQuantity.addEventListener("change", function (event) {
+                event.preventDefault();
+                let idChangedValue = article.id;
+                let quantityChanged = Number(inputQuantity.value);
+                console.log(quantityChanged);
+                let colorChanged = article.color;
+                let panier = cart.find(
+                    (el) => el.id === idChangedValue && el.option_product === colorChanged
+                );
+                console.log(panier);
+                if (panier) {
+                    panier.quantity = quantityChanged;
+                    localStorage.setItem("basket", JSON.stringify(cart));
+                } else {
+                    basket.push({
+                    id: idChangedValue,
+                    option_product: colorChanged,
+                    quantity: quantityChanged,
+                    });
+                    localStorage.setItem("basket", JSON.stringify(cart));
+                }
+                setTotalPrice();
+                location.reload();
+                });
+            }
+            changeNumberOfProducts();
+            }
+        });
+    };
 run();

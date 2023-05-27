@@ -10,7 +10,6 @@ class Basket{
     save() {
         localStorage.setItem("basket", JSON.stringify(this.basket));
     }
-
     add(product){    
         let foundProduct = this.basket.find(p => p.id == product.id && p.option_product == product.option_product);
         if(foundProduct != undefined){
@@ -22,14 +21,15 @@ class Basket{
         this.save();
     }
     remove(product){
-    this.basket = this.basket.filter(p => p.id != product.id);
+    this.basket = this.basket.filter(p => p.id != product.id);//avec || au lieu de && pour la couleur
     this.save();
     }
-
     changeQuantity(product,quantity){
-        let foundProduct = this.basket.find(p => p.id == product.id);
+        let foundProduct = this.basket.find(p => p.id == product._id && p.option_product == product.option_product);
+        
         if(foundProduct != undefined){//
-            foundProduct.quantity += quantity;
+            foundProduct.quantity += quantity;           
+            //this.save();
             if(foundProduct.quantity <= 0){
                 this.remove(foundProduct);
             }
@@ -37,7 +37,6 @@ class Basket{
             this.save();
             }
     }
-
     getNumberProduct(){
     let number = 0;
         for(let product of this.basket){
@@ -45,14 +44,12 @@ class Basket{
         }
         return number;
         }
-
     getTotalPrice(){
         let total = 0;
         products == [];
         for (let p of cart){
             const find = allProduct.find(product => product._id == p.id);
             products.push(find);
-            console.log(find);
             total += p.quantity * find.price;    
         console.log(total)    }
         return total; 
