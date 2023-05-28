@@ -170,6 +170,20 @@ const run =()=> {
                 });
             }
             changeNumberOfProducts();
+            function removeProduct(e) {
+                divDelete.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    let idItem = article.id;
+                    let colorItem = article.color;
+                    let updatedCart = cart.filter(el => el.id !== idItem || el.option_product !== colorItem);
+                    console.log(updatedCart);
+                    e.target.closest('.cart__item').remove();
+                    localStorage.setItem('basket', JSON.stringify(updatedCart));
+                    alert('Ce produit a bien été supprimé du panier !');
+                    location.reload();
+                    });
+                }
+                removeProduct();
             }
         });
     };
