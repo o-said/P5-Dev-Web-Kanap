@@ -158,7 +158,7 @@ const run =()=> {
                     panier.quantity = quantityChanged;
                     localStorage.setItem("basket", JSON.stringify(cart));
                 } else {
-                    basket.push({
+                    cart.push({
                     id: idChangedValue,
                     option_product: colorChanged,
                     quantity: quantityChanged,
@@ -185,6 +185,80 @@ const run =()=> {
                 }
                 removeProduct();
             }
+            const regex = {
+                firstName: /^[a-zA-ZÀ]+$/u,
+                lastName: /^[a-zA-ZÀ]+$/u,
+                address: /^[a-zA-Z0-9\s,'-]*$/u,
+                city: /^[a-zA-Z\s-]+$/u,
+                email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                };
+            document.addEventListener('input', function () {   
+                const firstNameInput = document.getElementById('firstName');              
+                const firstNameErrorMsg = document.getElementById('firstNameErrorMsg');            
+                firstNameInput.addEventListener('input', function () {
+                if (!regex.firstName.test(firstNameInput.value)) {
+                    firstNameErrorMsg.textContent = 'Le prénom est invalide.';
+                } else {
+                    firstNameErrorMsg.textContent = '';
+                }
+                });  
+                const lastNameInput = document.getElementById('lastName');             
+                const lastNameErrorMsg = document.getElementById('lastNameErrorMsg');            
+                lastNameInput.addEventListener('input', function () {
+                if (!regex.lastName.test(lastNameInput.value)) {
+                    lastNameErrorMsg.textContent = 'Le nom est invalide.';
+                } else {
+                    lastNameErrorMsg.textContent = '';
+                }
+                });  
+                const addressInput = document.getElementById('address');             
+                const addressErrorMsg = document.getElementById('addressErrorMsg');            
+                addressInput.addEventListener('input', function () {
+                if (!regex.address.test(addressInput.value)) {
+                    addressErrorMsg.textContent = 'L\'adresse est invalide.';
+                } else {
+                    addressErrorMsg.textContent = '';
+                }
+                }); 
+                const cityInput = document.getElementById('city');               
+                const cityErrorMsg = document.getElementById('cityErrorMsg');            
+                cityInput.addEventListener('input', function () {
+                if (!regex.city.test(cityInput.value)) {
+                    cityErrorMsg.textContent = 'La ville est invalide.';
+                } else {
+                    cityErrorMsg.textContent = '';
+                }
+                });  
+                const emailInput = document.getElementById('email');              
+                const emailErrorMsg = document.getElementById('emailErrorMsg');            
+                emailInput.addEventListener('input', function () {
+                if (!regex.email.test(emailInput.value)) {
+                    emailErrorMsg.textContent = 'L\'adresse email est invalide.';
+                } else {
+                    emailErrorMsg.textContent = '';
+                }
+                });
+            });
+            const submitButton = document.getElementById('order');
+            submitButton.addEventListener('click', function (event) {
+                event.preventDefault();
+                const cart = getBasket();
+                if (cart.length === 0) {
+                alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');
+                return;
+                }
+                const firstName = firstNameInput.value.trim();
+                const lastName = lastNameInput.value.trim();
+                const email = emailInput.value.trim();
+                const address = addressInput.value.trim();
+                const city = cityInput.value.trim();
+                if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
+                alert('Veuillez remplir tous les champs du formulaire.');
+                return ;
+                }
+                // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
+                document.getElementsByClassName('cart__order__form').submit();
+        });         
         });
     };
 run();
