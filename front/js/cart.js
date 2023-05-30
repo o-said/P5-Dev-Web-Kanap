@@ -6,8 +6,9 @@ function getBasket(){
         return JSON.parse(basket)
     }        
 }
-let cart = getBasket();
-cart = Array.isArray(cart) ? cart : [];
+let cart = [];
+cart = getBasket();
+
 console.log(cart);
 let allProduct = [];
 let products = [];
@@ -238,8 +239,7 @@ const run =()=> {
                     emailErrorMsg.textContent = '';
                 }
                 });
-            });
-            const submitButton = document.getElementById('order');
+                const submitButton = document.getElementById('order');
             submitButton.addEventListener('click', function (event) {
                 event.preventDefault();
                 const cart = getBasket();
@@ -257,8 +257,12 @@ const run =()=> {
                 return ;
                 }
                 // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
-                document.getElementsByClassName('cart__order__form').submit();
-        });         
+                const formInput = document.querySelector('.cart__order__form');
+                
+                formInput.submit();
+        });
+            });
+                     
         });
     };
 run();
