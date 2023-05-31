@@ -48,7 +48,6 @@ const execute = () =>{
                 quantity :parseInt(numberOfItem),
                 option_product : colorSelected,
                 }   
-            console.log(selectArticle);
             //on crée une fonction qui vérifie que la valeur de la quantité désirée soit bien un entier
             function fits(valueNumber){
             if(Number.isInteger(valueNumber)){

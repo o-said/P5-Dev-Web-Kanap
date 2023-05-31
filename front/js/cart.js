@@ -8,8 +8,6 @@ function getBasket(){
 }
 let cart = [];
 cart = getBasket();
-
-console.log(cart);
 let allProduct = [];
 let products = [];
 let imageUrl = [];
@@ -149,12 +147,10 @@ const run =()=> {
                 event.preventDefault();
                 let idChangedValue = article.id;
                 let quantityChanged = Number(inputQuantity.value);
-                console.log(quantityChanged);
                 let colorChanged = article.color;
                 let panier = cart.find(
                     (el) => el.id === idChangedValue && el.option_product === colorChanged
                 );
-                console.log(panier);
                 if (panier) {
                     panier.quantity = quantityChanged;
                     localStorage.setItem("basket", JSON.stringify(cart));
@@ -177,7 +173,6 @@ const run =()=> {
                     let idItem = article.id;
                     let colorItem = article.color;
                     let updatedCart = cart.filter(el => el.id !== idItem || el.option_product !== colorItem);
-                    console.log(updatedCart);
                     e.target.closest('.cart__item').remove();
                     localStorage.setItem('basket', JSON.stringify(updatedCart));
                     alert('Ce produit a bien été supprimé du panier !');
@@ -257,12 +252,10 @@ const run =()=> {
                 return ;
                 }
                 // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
-                const formInput = document.querySelector('.cart__order__form');
-                
+                const formInput = document.querySelector('.cart__order__form');                
                 formInput.submit();
         });
-            });
-                     
+            });                     
         });
     };
 run();
