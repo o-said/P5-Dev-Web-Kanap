@@ -29,13 +29,13 @@ const run =()=> {
                     quantity: p.quantity
                 };                  
             //retrouver les produits de l'api et du panier
-            const find = allProduct.find(product => product._id == p.id);                   
+            const find = allProduct.find(product => product._id == p.id);   //ajoute la couleur                
             p.imageUrl = find.imageUrl;            
             p.altTxt = find.altTxt;            
             p.description = find.description;            
             p.price = find.price;            
             p.option_color = p.option_product;                 
-            products.push(p.id,p.quantity,p.option_color);             
+            products.push(p.id)           
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
             let items = document.getElementById('cart__items');
@@ -167,7 +167,7 @@ const run =()=> {
                 });
             }
             changeNumberOfProducts();
-            function removeProduct(e) {
+            function removeProduct() {
                 divDelete.addEventListener('click', function (e) {
                     e.preventDefault();
                     let idItem = article.id;
@@ -181,6 +181,14 @@ const run =()=> {
                 }
                 removeProduct();
             }
+            let contact  = {
+                firstName: "",
+                lastName: "",
+                address: "",
+                city: "",
+                email: "",
+            };
+            console.log(contact)
             const regex = {
                 firstName: /^[a-zA-ZÀ]+$/u,
                 lastName: /^[a-zA-ZÀ]+$/u,
@@ -189,9 +197,12 @@ const run =()=> {
                 email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                 };
             document.addEventListener('input', function () {   
+                console.log(contact);
                 const firstNameInput = document.getElementById('firstName');              
                 const firstNameErrorMsg = document.getElementById('firstNameErrorMsg');            
-                firstNameInput.addEventListener('input', function () {
+                firstNameInput.addEventListener('input', function (e) {
+                e.preventDefault();
+                contact.firstName = e.target.value;
                 if (!regex.firstName.test(firstNameInput.value)) {
                     firstNameErrorMsg.textContent = 'Le prénom est invalide.';
                 } else {
@@ -200,7 +211,9 @@ const run =()=> {
                 });  
                 const lastNameInput = document.getElementById('lastName');             
                 const lastNameErrorMsg = document.getElementById('lastNameErrorMsg');            
-                lastNameInput.addEventListener('input', function () {
+                lastNameInput.addEventListener('input', function (e) {
+                e.preventDefault();
+                contact.lastName = e.target.value;
                 if (!regex.lastName.test(lastNameInput.value)) {
                     lastNameErrorMsg.textContent = 'Le nom est invalide.';
                 } else {
@@ -209,7 +222,9 @@ const run =()=> {
                 });  
                 const addressInput = document.getElementById('address');             
                 const addressErrorMsg = document.getElementById('addressErrorMsg');            
-                addressInput.addEventListener('input', function () {
+                addressInput.addEventListener('input', function (e) {
+                e.preventDefault();
+                contact.address = e.target.value;
                 if (!regex.address.test(addressInput.value)) {
                     addressErrorMsg.textContent = 'L\'adresse est invalide.';
                 } else {
@@ -218,7 +233,9 @@ const run =()=> {
                 }); 
                 const cityInput = document.getElementById('city');               
                 const cityErrorMsg = document.getElementById('cityErrorMsg');            
-                cityInput.addEventListener('input', function () {
+                cityInput.addEventListener('input', function (e) {
+                contact.city = e.target.value;
+                e.preventDefault();
                 if (!regex.city.test(cityInput.value)) {
                     cityErrorMsg.textContent = 'La ville est invalide.';
                 } else {
@@ -227,33 +244,62 @@ const run =()=> {
                 });  
                 const emailInput = document.getElementById('email');              
                 const emailErrorMsg = document.getElementById('emailErrorMsg');            
-                emailInput.addEventListener('input', function () {
+                emailInput.addEventListener('input', function (e) {
+                contact.email = e.target.value;
+                e.preventDefault();
                 if (!regex.email.test(emailInput.value)) {
                     emailErrorMsg.textContent = 'L\'adresse email est invalide.';
                 } else {
                     emailErrorMsg.textContent = '';
                 }
-                });
+                });            
                 const submitButton = document.getElementById('order');
             submitButton.addEventListener('click', function (event) {
                 event.preventDefault();
                 const cart = getBasket();
                 if (cart.length === 0) {
                 alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');
-                return;
-                }
-                const firstName = firstNameInput.value.trim();
+                return ;
+                } else{
+                    const firstName = firstNameInput.value.trim();
                 const lastName = lastNameInput.value.trim();
                 const email = emailInput.value.trim();
                 const address = addressInput.value.trim();
                 const city = cityInput.value.trim();
                 if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
                 alert('Veuillez remplir tous les champs du formulaire.');
-                return ;
-                }
-                // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
+           
+                }else {
+                    // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
                 const formInput = document.querySelector('.cart__order__form');                
                 formInput.submit();
+                }
+                
+                 //envoi de contact dans le localStorage
+                localStorage.setItem("contact", JSON.stringify(contact));
+
+                 //créer un objet order contenant les informations du formulaire de contact
+                console.log(contact);
+                let order = {
+                    contact: contact,
+                    products: products,
+                }
+                fetch("http://localhost:3000/api/products/order", {
+                    //ajouter la methode POST
+                    method: "post",
+                    body: JSON.stringify(order),
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then((data) => {
+                    console.log(data);
+                    let orderId = data.Id;
+                    location.assign("confirmation.html?id=" + orderId)
+                })
+                }
+                
         });
             });                     
         });
