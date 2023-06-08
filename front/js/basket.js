@@ -46,7 +46,7 @@ class Basket{
         }
     getTotalPrice(){
         let total = 0;
-        products == [];
+        let products = [];
         for (let p of cart){
             const find = allProduct.find(product => product._id == p.id);
             products.push(find);

@@ -9,7 +9,7 @@ function getBasket(){
 let cart = [];
 cart = getBasket();
 let allProduct = [];
-let products = [];
+let productsId = [];
 let imageUrl = [];
 let totalProduct = [];
 let totalPrice = 0;
@@ -35,7 +35,7 @@ const run =()=> {
             p.description = find.description;            
             p.price = find.price;            
             p.option_color = p.option_product;                 
-            products.push(p.id)           
+            productsId.push(p.id)           
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
             let items = document.getElementById('cart__items');
@@ -188,7 +188,7 @@ const run =()=> {
                 city: "",
                 email: "",
             };
-            console.log(contact)
+            console.log(productsId);
             const regex = {
                 firstName: /^[a-zA-ZÀ]+$/u,
                 lastName: /^[a-zA-ZÀ]+$/u,
@@ -256,10 +256,10 @@ const run =()=> {
                 const submitButton = document.getElementById('order');
             submitButton.addEventListener('click', function (event) {
                 event.preventDefault();
-                const cart = getBasket();
+                
                 if (cart.length === 0) {
                 alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');
-                return ;
+                
                 } else{
                     const firstName = firstNameInput.value.trim();
                 const lastName = lastNameInput.value.trim();
@@ -268,12 +268,10 @@ const run =()=> {
                 const city = cityInput.value.trim();
                 if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
                 alert('Veuillez remplir tous les champs du formulaire.');
-           
-                }else {
-                    // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
-                const formInput = document.querySelector('.cart__order__form');                
-                formInput.submit();
                 }
+                // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
+                const formInput = document.querySelector('.cart__order__form');                
+                formInput.submit();     
                 
                  //envoi de contact dans le localStorage
                 localStorage.setItem("contact", JSON.stringify(contact));
@@ -282,21 +280,22 @@ const run =()=> {
                 console.log(contact);
                 let order = {
                     contact: contact,
-                    products: products,
+                    products: productsId,
                 }
                 fetch("http://localhost:3000/api/products/order", {
                     //ajouter la methode POST
-                    method: "post",
+                    method: "POST",
                     body: JSON.stringify(order),
                     headers: {
-                        'content-type': 'application/json'
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',                        
                     },
                 })
                 .then(response => response.json())
                 .then((data) => {
                     console.log(data);
                     let orderId = data.Id;
-                    location.assign("confirmation.html?id=" + orderId)
+                    location.assign("confirmation.html?id=" + orderId);
                 })
                 }
                 
