@@ -254,32 +254,42 @@ const run =()=> {
                 }
                 });            
                 const submitButton = document.getElementById('order');
-            submitButton.addEventListener('click', function (event) {
-                event.preventDefault();
+                submitButton.addEventListener('click', function (event) {
+             
                 
-                if (cart.length === 0) {
+                if (!cart) {
                 alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');
                 
                 } else{
-                    const firstName = firstNameInput.value.trim();
+                event.preventDefault();
+                const firstName = firstNameInput.value.trim();
                 const lastName = lastNameInput.value.trim();
                 const email = emailInput.value.trim();
                 const address = addressInput.value.trim();
                 const city = cityInput.value.trim();
                 if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
                 alert('Veuillez remplir tous les champs du formulaire.');
+                
                 }
                 // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
                 const formInput = document.querySelector('.cart__order__form');                
                 formInput.submit();     
                 
                  //envoi de contact dans le localStorage
-                localStorage.setItem("contact", JSON.stringify(contact));
+                
 
                  //créer un objet order contenant les informations du formulaire de contact
+              
                 console.log(contact);
                 let order = {
-                    contact: contact,
+                    contact: 
+                    {
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        address: address,
+                        city: city,
+                    },
                     products: productsId,
                 }
                 fetch("http://localhost:3000/api/products/order", {
@@ -294,11 +304,10 @@ const run =()=> {
                 .then(response => response.json())
                 .then((data) => {
                     console.log(data);
-                    let orderId = data.Id;
-                    location.assign("confirmation.html?id=" + orderId);
+                    
+                    location.assign("confirmation.html?id=" + data.orderId);
                 })
-                }
-                
+                }                
         });
             });                     
         });
