@@ -276,8 +276,8 @@ function run() {
                 //vérification du panier
                 if (cart.length === 0) {
                         alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');                        
-                }
-                //récupération des valeurs du formulaire
+                }else {
+                    //récupération des valeurs du formulaire
                 const firstName = firstNameInput.value.trim();
                 const lastName = lastNameInput.value.trim();
                 const email = emailInput.value.trim();
@@ -287,8 +287,8 @@ function run() {
                 if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
                 alert('Veuillez remplir tous les champs du formulaire.');
                 
-                }   
-                            // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
+                } else {
+                                    // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
                 const formInput = document.querySelector('.cart__order__form');                
                 formInput.submit();              
                  //envoi de contact dans le localStorage
@@ -319,7 +319,11 @@ function run() {
                 })
                 .catch((error) => {
                     alert("Il y a eu une erreur : " + error);
-            }); 
+            });
+                }  
+             
+                }
+                
         });
     });
 }
