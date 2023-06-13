@@ -1,4 +1,6 @@
+
 class Basket{
+
     constructor(){
         let basket = localStorage.getItem("basket");
             if (basket == null) {
