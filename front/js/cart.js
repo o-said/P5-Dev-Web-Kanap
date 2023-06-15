@@ -302,6 +302,7 @@ function run() {
                     body: JSON.stringify(order),
                     headers: {
                         'Content-type': 'application/json',
+                        
                     },
                 })
                 .then(response => response.json())
@@ -314,6 +315,6 @@ function run() {
                 };  
             };                
         });
-    });
-};
+    })
+}
 run();
