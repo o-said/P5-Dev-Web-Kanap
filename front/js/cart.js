@@ -1,12 +1,8 @@
 function run() {
     let basket = localStorage.getItem("basket");    
     function getBasket() {                
-                if(basket == null){//dans le cas  d'un panier vide -> basket n'est pas déclaré
-                    return [];
-                }else{//le panier existe
-                    return JSON.parse(basket) 
-                }        
-            }
+        return JSON.parse(localStorage.getItem('basket')) || [];      
+        }
     let cart = getBasket(); 
     fetch(`http://localhost:3000/api/products/`)
     .then (response => response.json())
@@ -16,8 +12,7 @@ function run() {
         let pImageUrl = [];
         let pPrice = [];
         let pOption_color = [];
-        let productsId = [];    
-          
+        let productsId = [];           
         //boucle pour récupérer les données de l'api
         let allProduct=data;         
         for(let p of cart){            
@@ -25,7 +20,7 @@ function run() {
                 article = {
                     id : p.id,
                     color: p.option_product,
-                    quantity: p.quantity
+                    quantity: p.quantity,
                 };                  
             //retrouver les produits de l'api et du panier
             const find = allProduct.find(product => product._id == p.id);   //ajoute la couleur  
@@ -33,8 +28,7 @@ function run() {
             pImageUrl = find.imageUrl;            
             pPrice = find.price;            
             pOption_color = p.option_product;                 
-            productsId.push(p.id)   
-               
+            productsId.push(p.id);                  
             //création des différentes balises et de leur propriété
             let item = document.createElement('article');
             let items = document.getElementById('cart__items');
@@ -143,10 +137,8 @@ function run() {
             //Calcul du prix total
             function setTotalPrice(){              
                 let total = 0;
-                let products = [];
                 for (let p of cart){
                     const find = allProduct.find(product => product._id == p.id);
-                    products.push(find);
                     total += p.quantity * find.price;    
                 }               
                 document.getElementById("totalPrice").innerHTML = total;            
@@ -289,7 +281,7 @@ function run() {
                 
                 } else {
                                     // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
-                const formInput = document.querySelector('.cart__order__form');                
+                const formInput = document.querySelector('.cart__order__form'); 
                 formInput.submit();              
                  //envoi de contact dans le localStorage
                  //créer un objet order contenant les informations du formulaire de contact
@@ -310,7 +302,6 @@ function run() {
                     body: JSON.stringify(order),
                     headers: {
                         'Content-type': 'application/json',
-                      //  'Accept': 'application/json',                        
                     },
                 })
                 .then(response => response.json())
@@ -319,12 +310,10 @@ function run() {
                 })
                 .catch((error) => {
                     alert("Il y a eu une erreur : " + error);
-            });
-                }  
-             
-                }
-                
+                    });
+                };  
+            };                
         });
     });
-}
+};
 run();

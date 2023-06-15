@@ -3,7 +3,7 @@ const queryUrl = window.location.href;
 const url = new URL(queryUrl);
 const id = url.searchParams.get('id');
 //On récupère les données spécifique à l'id avec un fetch
-const execute = () =>{
+const execute = () => {
     fetch(`http://localhost:3000/api/products/${id}`)
     .then(response => {
         switch(response.status){
@@ -11,13 +11,13 @@ const execute = () =>{
                 return response.json();
             case 404:
                 alert('Page introuvable');
-                break;
+                return null;
             case 500:
-                ('Le serveur a rencontré une erreur.')
-                break;
+                alert('Le serveur a rencontré une erreur.');
+                return null;
             default:
-                alert('Erreur introuvable')
-                break;
+                alert('Erreur introuvable');
+                return null;
         }
     })
     //On crée les éléments et on leur affecte leur propriétés 
@@ -41,6 +41,23 @@ const execute = () =>{
         //au click sur le boutton , on récupère les données correspondantes à l'id, la quantité, et la couleur
         btn_addBasket.addEventListener('click',(event)=> {
             event.preventDefault();
+            function getBasket(){
+                return JSON.parse(localStorage.getItem('basket')) || [];
+            }
+            function saveBasket(basket){
+                localStorage.setItem('basket',JSON.stringify(basket)) ;
+            }
+            //on crée une fonction qui ajoute les données au panier
+            function addBasket(product) {
+                    let basket = getBasket();
+                    let foundProduct = basket.find(p => p.id == product.id && p.option_product == product.option_product);
+                    if(foundProduct != undefined){
+                        foundProduct.quantity = (parseInt(foundProduct.quantity)+parseInt(product.quantity));
+                    }else {
+                        basket.push(product);
+                    }    
+                    saveBasket(basket);                
+            }
             let colorSelected = document.querySelector('#colors').value;
             const numberOfItem = document.querySelector('#quantity').value;
             let selectArticle = {
@@ -59,7 +76,7 @@ const execute = () =>{
             //selon les valeurs des données on valide le chois d'article où on émet des alertes contenants un descriptif de l'erreur;
             if (colorSelected != "" && numberOfItem != 0 && numberOfItem <= 100  && fits(num) ) {            
                 alert(`${numberOfItem} ${data.name}, couleur ${colorSelected}, ${(numberOfItem <= 1) ? "a bien été ajouté " : "ont bien été ajoutés"} au panier. `);
-                basket.add(selectArticle);
+                addBasket(selectArticle);
             }else if(colorSelected != "" && numberOfItem != 0   && !fits(num) ){
                 alert('Veuillez entrer un nombre entier inférieur à 100');
             }else if( colorSelected != "" && numberOfItem != 0 && numberOfItem > 100 && fits(num)) {
@@ -71,9 +88,9 @@ const execute = () =>{
                 alert ('Veuillez indiquer une quantité !');
             }
             else if (colorSelected == "" && numberOfItem == 0 ){
-                alert('Veuillez indiquer une quantité et une couleur !')
+                alert('Veuillez indiquer une quantité et une couleur !');
             }  
         })
     })
-}
+};
 execute();
