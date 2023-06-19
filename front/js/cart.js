@@ -1,6 +1,6 @@
 
 function getBasket() {                
-    return JSON.parse(localStorage.getItem('basket') || '[]');      
+    return JSON.parse(localStorage.getItem('basket') || "[]");      
     }
 let cart = [];
 let productsId = [];   
@@ -9,7 +9,6 @@ cart = getBasket();
 fetch(`http://localhost:3000/api/products/`)
 .then (response => response.json())
 .then ((data) => {    
-    let article = [];
     let pName = [];
     let pImageUrl = [];
     let pPrice = [];
@@ -18,12 +17,6 @@ fetch(`http://localhost:3000/api/products/`)
     //boucle pour récupérer les données de l'api
     let allProduct=data;         
     for(let p of cart){            
-        //récupérer les id du post 
-            article = {
-                id : p.id,
-                color: p.option_product,
-                quantity: p.quantity,
-            };                  
         //retrouver les produits de l'api et du panier
         const find = allProduct.find(product => product._id == p.id);   //ajoute la couleur  
         pName = find.name;              
@@ -84,7 +77,7 @@ fetch(`http://localhost:3000/api/products/`)
         inputQuantity.setAttribute('name', 'itemQuantity');
         inputQuantity.setAttribute('min', '1');
         inputQuantity.setAttribute('max', '100');
-        inputQuantity.setAttribute('value', article.quantity);
+        inputQuantity.setAttribute('value', p.quantity);
         // Div "cart__item__content__settings__delete";
         let divDelete = document.createElement('div');
         divContentSetting.appendChild(divDelete);
@@ -116,9 +109,9 @@ fetch(`http://localhost:3000/api/products/`)
     function changeNumberOfProducts() {
         inputQuantity.addEventListener("change", function (event) {
         event.preventDefault();
-        let idChangedValue = article.id;
+        let idChangedValue = p.id;
         let quantityChanged = Number(inputQuantity.value);
-        let colorChanged = article.color;
+        let colorChanged = p.color;
         let panier = cart.find(
             (el) => el.id === idChangedValue && el.option_product === colorChanged
         );
@@ -142,8 +135,8 @@ fetch(`http://localhost:3000/api/products/`)
     function removeProduct() {
         divDelete.addEventListener('click', function (e) {
             e.preventDefault();
-            let idItem = article.id;
-            let colorItem = article.color;
+            let idItem = p.id;
+            let colorItem = p.color;
             let updatedCart = cart.filter(el => el.id !== idItem || el.option_product !== colorItem);
             e.target.closest('.cart__item').remove();
             localStorage.setItem('basket', JSON.stringify(updatedCart));
@@ -156,7 +149,7 @@ fetch(`http://localhost:3000/api/products/`)
 })
 // Récupération des données du panier  
 }
-displayCart();
+
 //validation du formulaire
 function validateForm() {
     // Envoi des données au serveur
@@ -236,7 +229,8 @@ function validateForm() {
             });  
         //envoi des données au serveur
             const submitButton = document.getElementById('order');
-            submitButton.addEventListener('click', function(event) {         
+            submitButton.addEventListener('click', function(event) { 
+            event.preventDefault();            
             //vérification du panier
             if (cart.length === 0) {
                     alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');                        
@@ -250,11 +244,10 @@ function validateForm() {
             //validation des données du formulaire
             if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
             alert('Veuillez remplir tous les champs du formulaire.');            
-            } else {
-            event.preventDefault();
+            } else {           
             // Si toutes les conditions sont remplies, vous pouvez soumettre le formulaire ici
             const formInput = document.querySelector('.cart__order__form'); 
-            formInput.submit();              
+                       
                 //envoi de contact dans le localStorage
                 //créer un objet order contenant les informations du formulaire de contact
             let order = {
@@ -268,25 +261,30 @@ function validateForm() {
                 },
                 products: productsId,
             }
-
-            fetch("http://localhost:3000/api/products/order", {
+            console.log(contact)
+           fetch("http://localhost:3000/api/products/order", {
                 //ajouter la methode POST
                 method: "POST",
+                
                 body: JSON.stringify(order),
                 headers: {
-                    'Content-type': 'application/json',
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                }
+                },
             })
             .then(response => response.json())
             .then((data) => {  
                 location.assign("confirmation.html?id=" + data.orderId);
             })
-            
+            .catch((error) => { 
+                console.log('Erreur : ' + error);
+            });
+              formInput.submit(); 
             } 
         };          
     })
 }
+displayCart();
 validateForm();
 
 
