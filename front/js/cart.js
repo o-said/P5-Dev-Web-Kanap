@@ -13,20 +13,22 @@ let article = [];
 
 // Affichage du panier
 async function displayCart() {
+    // Récupération du panier
     cart = await getBasket();
+    //aatendre la réponse de l'api
     const response = await fetch(`http://localhost:3000/api/products/`);
     const data = await response.json();
+    // Récupération des produits
     let product = data;
-    console.log(product);
-
     for (let p of cart) {
-    // Récupérer les id du post
+    // Récupérer les id, couleur et quantité du post
     article = {
         id: p.id,
         color: p.option_product,
         quantity: p.quantity
     };
-    console.log(cart);
+    // Récupérer les informations du produit
+    // Récupérer le nom, l'image et le prix du produit des produits qui ont le même id que le post
     const find = product.find(product => product._id == p.id);
     pName = find.name;
     pImageUrl = find.imageUrl;
@@ -114,20 +116,22 @@ async function displayCart() {
 
     // Modification du nombre de produits
     function changeNumberOfProducts(inputQuantity, article) {
+        //écoute le changement de la quantité
         inputQuantity.addEventListener("change", function (event) {
         event.preventDefault();
         let idChangedValue = article.id;
         let quantityChanged = Number(inputQuantity.value);
-        console.log(quantityChanged);
         let colorChanged = article.color;
+        //cherche tous les éléments du panier qui ont le même id et la même couleur
         let panier = cart.find(
             (el) => el.id === idChangedValue && el.option_product === colorChanged
         );
-        console.log(panier);
+        //si le panier existe, on modifie la quantité
         if (panier) {
             panier.quantity = quantityChanged;
             localStorage.setItem("basket", JSON.stringify(cart));
-        } else {
+        }//sinon on ajoute le produit au panier 
+        else {
             cart.push({
             id: idChangedValue,
             option_product: colorChanged,
@@ -136,6 +140,7 @@ async function displayCart() {
             localStorage.setItem("basket", JSON.stringify(cart));
         }
         setTotalPrice();
+        //on recharge la page pour afficher les modifications
         location.reload();
         });
     }
@@ -143,13 +148,16 @@ async function displayCart() {
 
     // Suppression d'un produit
     function removeProduct(divDelete, article) {
+        //écoute le clic sur le bouton supprimer
         divDelete.addEventListener('click', function (e) {
         e.preventDefault();
         let idItem = article.id;
         let colorItem = article.color;
+        //on filtre le panier pour supprimer le produit qui a le même id et la même couleur
         let updatedCart = cart.filter(el => el.id !== idItem || el.option_product !== colorItem);
-        console.log(updatedCart);
+        //on cible l'élement parent du bouton supprimer pour supprimer le produit du DOM
         e.target.closest('.cart__item').remove();
+        //on met à jour le panier
         localStorage.setItem('basket', JSON.stringify(updatedCart));
         alert('Ce produit a bien été supprimé du panier !');
         location.reload();
@@ -162,8 +170,10 @@ async function displayCart() {
     function totalNumberOfProduct() {
     let number = 0;
     for (let product of cart) {
+        //on additionne la quantité de chaque produit
         number += JSON.parse(product.quantity);
     }
+    //on affiche le nombre total de produits
     document.getElementById('totalQuantity').innerHTML = number;
     }
     totalNumberOfProduct();
@@ -172,6 +182,7 @@ async function displayCart() {
     function setTotalPrice() {
     let total = 0;
     for (let p of cart) {
+        //on cherche tous les produits dans le data qui ont le même id que le produit du panier
         const find = product.find(product => product._id == p.id);
         total += p.quantity * find.price;
     }
@@ -215,9 +226,12 @@ const emailErrorMsg = document.getElementById('emailErrorMsg');
 firstNameInput.addEventListener('input', function (e) {
     e.preventDefault();
     contact.firstName = e.target.value;
+    // Si le prénom est invalide
     if (!regex.firstName.test(firstNameInput.value)) {
         firstNameErrorMsg.textContent = 'Le prénom est invalide.';
-    } else {
+    } else 
+    // Si le prénom est valide
+    {
         firstNameErrorMsg.textContent = '';
     }
 });
@@ -274,16 +288,20 @@ function submitForm() {
         event.preventDefault();
         if (cart.length === 0) {
             alert('Votre panier est vide. Ajoutez des articles avant de soumettre le formulaire.');
-        } else {
+        } else 
+        // Si le formulaire est valide on récupère les données du formulaire et les produits du panier
+        {
             const firstName = firstNameInput.value;
             const lastName = lastNameInput.value;
             const email = emailInput.value;
             const address = addressInput.value;
             const city = cityInput.value;
-
+            //si tous les champs ne sont pas remplis on affiche une alerte
             if (firstName === '' || lastName === '' || email === '' || address === '' || city === '') {
                 alert('Veuillez remplir tous les champs du formulaire.');
-            } else {
+            } else
+            //si le formulaire est valide on envoie les données au serveur
+            {
                 let order = {
                     contact: {
                         firstName: firstName,
@@ -297,7 +315,9 @@ function submitForm() {
 
                 // Fetch POST pour envoyer les données au serveur
                 try {
+                    // Envoi des données au serveur par le biais de la méthode POST
                     const response = await fetch("http://localhost:3000/api/products/order", {
+                        // Configuration de la requête
                         method: "POST",
                         body: JSON.stringify(order),
                         headers: {
@@ -308,8 +328,11 @@ function submitForm() {
 
                     // Récupération de la réponse du serveur
                     const data = await response.json();
+                    // Redirection vers la page de confirmation de commande
                     location.assign("confirmation.html?id=" + data.orderId);
-                } catch (error) {
+                } 
+                // Affichage de l'erreur dans la console
+                catch (error) {
                     console.log('Erreur : ' + error);
                 }
             }
