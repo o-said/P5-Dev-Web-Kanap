@@ -203,8 +203,8 @@ async function validateForm() {
 
     // Regex pour la validation du formulaire
     const regex = {
-        name: /^[a-zA-ZÀ-]+$/u,
-        address: /^[a-zA-Z0-9\s,'-]*$/u,
+        name: /^[a-zA-ZÀ-àçèïéù\s'.-]+$/u,
+        address: /^[a-zA-Z0-9-àçèïéù\s,'.-]*$/u,
         email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
     };
 
